@@ -21,6 +21,7 @@
   "Create": "Create",
   "Create New Project": "Create New Project",
   "Want you delete this project?": "Want you delete this project?",
+  "Want you delete this case?": "Want you delete this case?",
   "Page not found": "Page not found",
   "Please check the URL in the address bar and try again": "Please check the URL in the address bar and try again",
   "Go back projects": "Go back projects",
@@ -30,5 +31,19 @@
   "Actions": "Actions",
   "Run": "Run",
   "Never run yet": "Never run yet",
-  "Add New Case": "Add New Case"
+  "Add New Case": "Add New Case",
+  "Steps": "Steps",
+  "This table is empty yet": "This table is empty yet",
+  "Add Case": "Add Case",
+  "Update Case": "Update Case",
+  "Edit Case": "Edit Case",
+  "Hello, ": "Hello, ",
+  "Environments": "Environments",
+  "Environment Variables": "Environment Variables",
+  "Save": "Save",
+  "Add New Environment": "Add New Environment",
+  "Add": "Add",
+  "Key": "Key",
+  "Value": "Value",
+  "Add New Variable": "Add New Variable"
 }

@@ -19,30 +19,6 @@
       </div>
     </ul>
     <t-modal
-      ref="editProjectModal"
-      :header="$t('Edit Project')"
-    >
-      <form class='px-2 py-2' @submit.prevent="updateProject">
-        <div>
-          <label for="edit-project-name" class="block text-sm font-medium text-gray-700">{{ $t('Project Name') }}</label>
-          <div class="mt-1">
-            <input id="edit-project-name" v-model='editProject.name' name="project-name" type="text" required="" :class='{"border-red-300": editValidationErrors.name}' class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-          </div>
-          <p v-if='editValidationErrors.name' class="mt-2 text-sm text-red-600">{{editValidationErrors.name[0]}}</p>
-        </div>
-      </form>
-      <template #footer>
-        <div class="flex justify-between">
-          <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500" @click='closeEditModal'>
-            {{$t('Cancel')}}
-          </button>
-          <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" @click='updateProject'>
-            {{$t('Update')}}
-          </button>
-        </div>
-      </template>
-    </t-modal>
-    <t-modal
       ref="createProjectModal"
       :header="$t('Create New Project')"
     >
@@ -62,6 +38,30 @@
           </button>
           <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" @click='addProject'>
             {{$t('Create Project')}}
+          </button>
+        </div>
+      </template>
+    </t-modal>
+    <t-modal
+      ref="editProjectModal"
+      :header="$t('Edit Project')"
+    >
+      <form class='px-2 py-2' @submit.prevent="updateProject">
+        <div>
+          <label for="edit-project-name" class="block text-sm font-medium text-gray-700">{{ $t('Project Name') }}</label>
+          <div class="mt-1">
+            <input id="edit-project-name" v-model='editProject.name' name="project-name" type="text" required="" :class='{"border-red-300": editValidationErrors.name}' class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+          </div>
+          <p v-if='editValidationErrors.name' class="mt-2 text-sm text-red-600">{{editValidationErrors.name[0]}}</p>
+        </div>
+      </form>
+      <template #footer>
+        <div class="flex justify-between">
+          <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500" @click='closeEditModal'>
+            {{$t('Cancel')}}
+          </button>
+          <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" @click='updateProject'>
+            {{$t('Update')}}
           </button>
         </div>
       </template>
@@ -140,7 +140,7 @@ export default {
       })
     },
     deleteProject(project){
-      const isConfirmed = confirm('Want you delete this project?')
+      const isConfirmed = confirm(this.$t('Want you delete this project?').toString())
       if(isConfirmed){
         this.$axios.delete(`projects/${project.id}`).then(() => {
           this.projects = this.projects.filter(p => p.id !== project.id)
