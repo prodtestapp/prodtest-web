@@ -42,6 +42,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/i18n',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -49,5 +50,20 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+  },
+
+  i18n: {
+    locales: [
+      { code: 'en', file: 'en.json' },
+    ],
+    defaultLocale: 'en',
+    lazy: true,
+    strategy: 'no_prefix',
+    alwaysRedirect: true,
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_locale',
+    },
+    langDir: 'languages/',
+  },
 }
