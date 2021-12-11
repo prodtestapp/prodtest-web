@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  name: 'Logout',
   middleware: 'auth',
   mounted() {
     this.$auth.logout().then(() => {
