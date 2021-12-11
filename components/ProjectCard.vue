@@ -12,7 +12,9 @@
         <dd class="text-gray-500 text-sm"> {{ getCaseCount() }}</dd>
         <dt class="sr-only">Role</dt>
         <dd class="mt-3">
-          <span class="px-2 py-1 text-green-800 text-xs font-medium bg-green-100 rounded-full">{{$dayjs().format('lll')}}</span>
+          <span v-if='!project.latest_log' class="px-2 py-1 text-gray-800 text-xs font-medium bg-gray-100 rounded-full">{{$t('Never run yet')}}</span>
+          <span v-else-if='project.latest_log.status === false' class="px-2 py-1 text-red-800 text-xs font-medium bg-red-100 rounded-full">{{$dayjs(project.latest_log.createdAt).format('lll')}}</span>
+          <span v-else-if='project.latest_log.status === true' class="px-2 py-1 text-green-800 text-xs font-medium bg-green-100 rounded-full">{{$dayjs(project.latest_log.createdAt).format('lll')}}</span>
         </dd>
       </dl>
     </NuxtLink>
@@ -29,7 +31,6 @@
         </div>
         <div class="-ml-px w-0 flex-1 flex">
           <button class="relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-br-lg hover:text-gray-500" @click='$emit("delete", project)'>
-            <!-- Heroicon name: solid/phone -->
             <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>

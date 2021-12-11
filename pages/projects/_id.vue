@@ -37,9 +37,9 @@
                   {{testCase.steps_count}} {{$t('Steps')}}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span v-if='!testCase.last_check_date' class="px-2 py-1 text-gray-800 text-xs font-medium bg-gray-100 rounded-full">{{$t('Never run yet')}}</span>
-                  <span v-else-if='testCase.last_check_status === false' class="px-2 py-1 text-red-800 text-xs font-medium bg-red-100 rounded-full">{{$dayjs(testCase.last_check_date).format('lll')}}</span>
-                  <span v-else-if='testCase.last_check_status === true' class="px-2 py-1 text-green-800 text-xs font-medium bg-green-100 rounded-full">{{$dayjs(testCase.last_check_date).format('lll')}}</span>
+                  <span v-if='!testCase.latest_log' class="px-2 py-1 text-gray-800 text-xs font-medium bg-gray-100 rounded-full">{{$t('Never run yet')}}</span>
+                  <span v-else-if='testCase.latest_log.status === false' class="px-2 py-1 text-red-800 text-xs font-medium bg-red-100 rounded-full">{{$dayjs(testCase.latest_log.createdAt).format('lll')}}</span>
+                  <span v-else-if='testCase.latest_log.status === true' class="px-2 py-1 text-green-800 text-xs font-medium bg-green-100 rounded-full">{{$dayjs(testCase.latest_log.createdAt).format('lll')}}</span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <span class="relative z-0 inline-flex shadow-sm rounded-md">
