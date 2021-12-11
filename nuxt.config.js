@@ -1,3 +1,7 @@
+import 'dayjs/plugin/utc'
+import 'dayjs/plugin/timezone'
+import 'dayjs/plugin/localizedFormat'
+
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -25,6 +29,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/TailwindUI.js',
+    '~/plugins/Axios.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -45,11 +51,12 @@ export default {
     '@nuxtjs/i18n',
     '@nuxtjs/auth-next',
     '@nuxtjs/toast',
+    '@nuxtjs/dayjs'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    BASE_URL: process.env.NUXT_ENV_API_BASE_URL,
+    baseURL: process.env.NUXT_ENV_API_BASE_URL
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
@@ -95,5 +102,16 @@ export default {
   toast: {
     position: 'top-right',
     register: []
+  },
+
+  dayjs: {
+    locales: ['en'],
+    defaultLocale: 'en',
+    defaultTimeZone: 'Europe/Istanbul',
+    plugins: [
+      'utc',
+      'timezone',
+      "localizedFormat"
+    ]
   }
 }
