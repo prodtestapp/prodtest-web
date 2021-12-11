@@ -66,7 +66,7 @@
                 </td>
               </tr>
               <tr v-if='project.cases.length === 0'>
-                <td class='text-sm text-gray-800 text-center py-5' colspan='4'>{{$t('This table is empty yet')}}</td>
+                <td class='text-sm text-gray-800 text-center py-10' colspan='4'>{{$t('This table is empty yet')}}</td>
               </tr>
               </tbody>
             </table>
