@@ -1,69 +1,56 @@
-# prodtest-web
+# ProdTest Web ()
+End-to-End API testing tool with **no code**
 
-## Build Setup
+## Nedir?
+ProdTest API uygulamalarına kodsuz bir şekilde e2e test eklemeyi sağlayan bir araçtır. Projenize senaryo bazlı testleri hızlıca ekleyerek web servislerinizin doğru biçimde çalıştığınızdan emin olabilirsiniz.
 
+## Özellikler
+* Platform içerisinde birden fazla kullanıcı oluşturabilirsiniz.
+* Projelerinizin ayrı ayrı oluşturarak, senaryolarınızın karışıkasını önleyebilirsiniz.
+* Projelere bağlı şekilde "environment variables" oluşturarak, farklı ortamlarda (development, production vb.) testlerinizi çalıştırabilirsiniz.
+* Sadece başarılı senaryoları değil, hata senaryolarını da izleyebilirsiniz. (404, 422, 500 gibi hata kodlarını gereken olarak cevap olarak belirleyebilirsiniz)
+* GET, POST, PUT, DELETE vb. gibi bir çok HTTP methodu destekler, bu sayede bütün aksiyonlarınızı test edebilirsiniz.
+* Projelerdeki ve caselerdeki son kontrol zamanıyla birlikte en son işlemde alınan cevabın başarılı veya hatalı olduğunu loglardan takip edebilirsiniz.
+* Senaryodaki isteklerinizde, önceki isteklerde aldığınız cevapların data ve header verilerini kullanabilirsiniz. (Böylece ilk adımı login olan bir senaryo oluşturup, sonraki adımlara access_token içerisinde dönen veriyi taşıyabilirsiniz.)
+* İsteklerinizde kolayca body içeriği gönderebilirsiniz. Platform içerisinde JSON, XML ve HTML destekleyen bir editöre sahibiz.
+* AJV entegrasyonumuz sayesinde isteklere validasyon ekleyebilirsiniz. Eğer beklentinizin dışında bir veri gelirse, adım fail olacaktır.
+* Senaryolarınızda adım eklemesini yaptıktan sonra sürükle bırak yaparak senaryo sırasını kolaylıkla değiştirebilirsiniz.
+* Senaryo içerisinde bir adı başarısız olursa, senaryo çalışmayı durduracak ve sonraki adımların çalışmamasını sağlayacaktır.
+* Platform içerisinde multi language desteği mevcuttur. Varsayılan dil İngilizce olsa da istediğiniz dilleri çeviri dosyasını düzenleyerek platforma entegre edebilirsiniz.
+
+## Kurulum
+Geliştirme ortamında client projesini ayağa kaldırmadan prodtest back-end servisimizin çalışır durumda olduğundan emin olunuz. [Back-end servisimizin kurulumuna buraya tıklayarak ulaşabilirsiniz.](https://github.com/prodtestapp/prodtest-server)
+
+`Development` Projenin git üzerinden çekilmesi
 ```bash
-# install dependencies
-$ yarn install
-
-# serve with hot reload at localhost:3000
-$ yarn dev
-
-# build for production and launch server
-$ yarn build
-$ yarn start
-
-# generate static project
-$ yarn generate
+$ git clone git@github.com:prodtestapp/prodtest-web.git
+$ cd prodtest-web
 ```
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+`Development` dotenv ile prodtest web servisinin adresinin belirtilmesi gerekmektedir.
+```bash
 
-## Special Directories
+$ cp .env.example .env
+$ nano .env
+# beklenen web servis adresi örnek olarak şu şekilde olmalıdır: http://localhost:8000/api
+```
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+`Development` Projede paket yöneticisi olarak yarn önerilmektedir.
+```bash
+# gereksinimlerin yüklenmesi
+$ yarn 
 
-### `assets`
+# NuxtJS projesini dev ortamında ayağa kaldırmak
+$ yarn dev
+```
 
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
+`Production` NuxtJS projesini production modunda paketlemek için aşağıdaki kodu kullanabilirsiniz.
+```bash
+$ yarn build
+$ yarn start
+```
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
+`Development` Projeyi development modunda çalıştırmak istiyorsanız eğer 3000 portu kullanımda değilse [http://localhost:3000](http://localhost:3000) adresinden projeye ulaşabilirsiniz. Port kullanımdaysa terminalinizdeki adresi kullanarak ulaşabilirsiniz.
 
-### `components`
-
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
-
-### `layouts`
-
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
-
-### `pages`
-
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
-
-### `plugins`
-
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
-
-### `static`
-
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+## License
+[MIT](https://github.com/prodtestapp/prodtest-web/blob/master/LICENSE)
