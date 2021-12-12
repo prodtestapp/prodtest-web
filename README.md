@@ -5,7 +5,7 @@ End-to-End API testing tool with **no code**
 ProdTest API uygulamalarına kod yazmadan e2e (end-to-end) test eklemeyi sağlayan bir araçtır. Projenize senaryo bazlı testleri hızlıca ekleyerek web servislerinizin doğru biçimde çalıştığınızdan emin olabilirsiniz.
 
 ## Önizleme Videosu (YouTube)
-Video adresi: https://www.youtube.com/watch?v=CgMLbAvnoPc
+Video adresi: [YouTube Videosu](https://www.youtube.com/watch?v=CgMLbAvnoPc)
 
 [![youtube video](https://i3.ytimg.com/vi/CgMLbAvnoPc/maxresdefault.jpg)](https://youtu.be/CgMLbAvnoPc)
 
@@ -57,8 +57,7 @@ $ yarn start
 
 Docker ile alternatif kurulum:
 ```bash
-docker-compose up -d
-# localhost:3000/
+$ docker-compose up -d
 ```
 
 `Development` Projeyi development modunda çalıştırmak istiyorsanız eğer 3000 portu kullanımda değilse [http://localhost:3000](http://localhost:3000) adresinden projeye ulaşabilirsiniz. Port kullanımdaysa terminalinizdeki adresi kullanarak ulaşabilirsiniz.
