@@ -44,7 +44,7 @@
             <div class='min-w-0 flex-1 flex items-center space-x-3'>
               <div class='flex-shrink-0'>
                 <img class='h-10 w-10 rounded-full'
-                     :src='`https://ui-avatars.com/api/?name=${user.full_name}&background=random`'
+                     :src='`https://ui-avatars.com/api/?name=${encodeURI(user.full_name)}&background=random`'
                      :alt='user.full_name'>
               </div>
               <div class='min-w-0 flex-1'>
