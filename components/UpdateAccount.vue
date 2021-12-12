@@ -4,9 +4,10 @@
       <div class='px-4 py-5 bg-white space-y-6 sm:p-6'>
         <div class='grid grid-cols-3 gap-6'>
           <div class='col-span-3 sm:col-span-2'>
-            <label for='first-name' class='block text-sm font-medium text-gray-700'>{{ $t('Full Name') }}</label>
-            <input id='first-name' v-model='fullName' type='text' name='first-name' autocomplete='given-name'
-                   class='mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md' />
+            <label for='full-name' class='block text-sm font-medium text-gray-700'>{{ $t('Full Name') }}</label>
+            <input id='full-name' v-model='fullName' :class='{"border-red-300": validationErrors.fullName}'
+                   name='full-name' type='text' required=''
+                   class='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm' />
           </div>
         </div>
       </div>
@@ -26,6 +27,7 @@ export default {
   data() {
     return {
       fullName: this.$auth.user.data.full_name,
+      validationErrors: {},
     }
   },
   methods: {
