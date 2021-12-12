@@ -48,10 +48,10 @@
                 </th>
               </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
+              <draggable v-model="steps" tag="tbody" class="bg-white divide-y divide-gray-200" handle=".handle" :component-data='getDraggableComponentData()'>
                 <tr v-for='step in steps' :key='`step-${step.id}`'>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="h-5 w-5 handle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                   </td>
@@ -103,7 +103,7 @@
                 <tr v-if='steps.length === 0'>
                   <td class='text-sm text-gray-800 text-center py-10' colspan='7'>{{$t('This table is empty yet')}}</td>
                 </tr>
-              </tbody>
+              </draggable>
             </table>
           </div>
         </div>
@@ -200,6 +200,7 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import EnvironmentsModal from '~/components/EnvironmentsModal'
 import EnvironmentSelect from '~/components/EnvironmentSelect'
 import { getDefaultModalClasses } from '~/helpers/defaultModalClasses'
@@ -207,7 +208,7 @@ import Runner from '~/helpers/runner'
 const Ajv = require("ajv")
 export default {
   name: 'Project',
-  components: { EnvironmentSelect, EnvironmentsModal },
+  components: { EnvironmentSelect, EnvironmentsModal, draggable },
   layout: 'Dashboard',
   middleware: 'auth',
   data(){
@@ -267,7 +268,7 @@ export default {
         {value: true, label: this.$t('Use validator')},
       ],
       ajv: new Ajv(),
-      running: false
+      running: false,
     }
   },
   watch: {
@@ -484,6 +485,16 @@ export default {
 
       }
       this.running = false
+    },
+    onChangeStepsOrder(value){
+      console.log(value)
+    },
+    getDraggableComponentData() {
+      return {
+        on: {
+          change: this.onChangeStepsOrder,
+        },
+      };
     }
   }
 }

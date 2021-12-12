@@ -31,7 +31,8 @@ export default {
   plugins: [
     '~/plugins/TailwindUI.js',
     '~/plugins/Axios.js',
-    '~/plugins/CodeEditor.js'
+    '~/plugins/CodeEditor.js',
+    '~/plugins/Draggable.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
