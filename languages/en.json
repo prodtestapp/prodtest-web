@@ -68,5 +68,8 @@
   "Validation Schema": "Validation Schema",
   "ajv_validation_information": "ProdTest uses <a href='https://ajv.js.org/' target='_blank'>ajv validator</a> for JSON data validation. Please add a valid avj schema.",
   "validation_schema_error": "Validation schema isn't valid",
-  "headers_not_valid": "Headers not valid"
+  "headers_not_valid": "Headers not valid",
+  "body_not_valid": "Body not valid, data is not valid JSON",
+  "Run Tests": "Run Tests",
+  "Running...": "Running..."
 }
