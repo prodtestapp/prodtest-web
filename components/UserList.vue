@@ -13,19 +13,19 @@
         <form class='mt-6 flex flex-col' @submit.prevent='addNewUser'>
           <div class='col-span-12 sm:col-span-6'>
             <label for='full-name' class='block text-sm font-medium text-gray-700'>Full name</label>
-            <input id='full-name' v-model='userObject.full_name' type='text' name='full-name' autocomplete='given-name'
-                   class='mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm border-gray-300 rounded-md'
-                   required />
+            <input id='full-name' v-model='userObject.full_name' :class='{"border-red-300": validationErrors.full_name}'
+                   name='full-name' type='text' required=''
+                   class='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm' />
 
             <label for='email' class='block text-sm font-medium text-gray-700'>Email address</label>
-            <input id='email' v-model='userObject.email' type='email' name='email'
-                   class='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 rounded-md'
-                   required />
+            <input id='email' v-model='userObject.email' :class='{"border-red-300": validationErrors.email}'
+                   name='email' type='email' autocomplete='email' required=''
+                   class='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm' />
 
             <label for='password' class='block text-sm font-medium text-gray-700'>Password</label>
-            <input id='password' v-model='userObject.password' type='password' name='password' autocomplete='family-name'
-                   class='mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
-                   required />
+            <input id='password' v-model='userObject.password' :class='{"border-red-300": validationErrors.password}'
+                   name='password' type='password' required=''
+                   class='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm' />
           </div>
 
           <div class='col-span-12 flex justify-end mt-5'>
@@ -69,7 +69,8 @@ export default {
         full_name: '',
         email: '',
         password: ''
-      }
+      },
+      validationErrors: {},
     }
   },
   mounted() {
@@ -87,6 +88,12 @@ export default {
         this.userObject.email = ''
         this.userObject.password = ''
         this.userObject.full_name = ''
+      }).catch(err => {
+        if (err.response.status === 422) {
+          this.validationErrors = err.response.data.errors
+        } else {
+          this.$toast.error(this.$t('default_error').toString())
+        }
       })
     }
   }
