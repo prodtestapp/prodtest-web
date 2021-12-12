@@ -45,7 +45,6 @@
             </a>
           </nav>
         </div>
-
         <div class='pl-8' style='flex: 5'>
           <div v-for='(dataItem, dataItemIndex) in activeData' :key='`env-${selectedEnvironmentId}-${dataItemIndex}`' class='flex mb-3'>
             <input v-model="dataItem.key" style='flex: 2' :placeholder='$t("Key")' :class='{"border-red-300": addValidationErrors.name}' type="text" required="" class="appearance-none block w-full px-3 py-2 border border-gray-300 border-r-0 rounded-l-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
@@ -107,6 +106,7 @@ export default {
       this.loading = true;
       this.$axios.get(`projects/${this.projectId}/environments`).then(res => {
         this.environments = res.data.data
+        this.$store.commit('environments/setEnvironmentsData', {projectId: this.projectId, environments: res.data.data})
         if(res.data.data.length > 0){
           if(selectLast) {
             this.selectedEnvironmentId = res.data.data[res.data.data.length - 1].id
