@@ -130,6 +130,9 @@ export default {
     },
     importDataFromSelected(){
       let data = JSON.parse(this.environments.find(env => env.id === this.selectedEnvironmentId).data)
+      if(!data){
+        data = []
+      }
       data = data.filter(item => item.key)
       this.activeData = data
     },
