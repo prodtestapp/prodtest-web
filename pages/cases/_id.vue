@@ -167,7 +167,7 @@
           <p v-if='createValidationErrors.use_validator' class="mt-2 text-sm text-red-600">{{createValidationErrors.use_validator[0]}}</p>
         </div>
         <div v-show='createStep.contentType === "json" && createStep.useValidator' class='mt-4'>
-          <label class="block text-sm font-medium text-gray-700">{{ $t('Validation Schema') }}</label>
+          <label class="block text-sm font-medium text-gray-700">{{ $t('Validation Schema') }}<span class='text-gray-400 ml-1 font-normal text-sx'>(json)</span></label>
           <codemirror v-model="createStep.validationSchema" :options="validationCmOptions"></codemirror>
           <p v-if='createValidationErrors.validator_schema' class="mt-2 text-sm text-red-600">{{createValidationErrors.validator_schema[0]}}</p>
           <p  class="mt-2 text-sm text-blue-400" v-html='$t("ajv_validation_information")'></p>
