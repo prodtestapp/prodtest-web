@@ -8,7 +8,15 @@
       @right-button-click='showEnvironmentsModal'
     >
       <template #rightComponent>
-        <EnvironmentSelect class='mr-3' :project-id='testCase.project.id' />
+        <div class='flex'>
+          <button v-if='!running' type="button" class="mr-2 inline-flex items-center px-3 py-2 border bg-green-600 border-green-600 shadow-sm text-sm leading-4 font-medium rounded-md text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click='startRun'>
+            {{$t('Run Tests')}}
+          </button>
+          <button v-else disabled="disabled" type="button" class="mr-2 inline-flex items-center px-3 py-2 border bg-gray-400 border-gray-400 shadow-sm text-sm leading-4 font-medium rounded-md text-white hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            {{$t('Running...')}}
+          </button>
+          <EnvironmentSelect class='mr-3' :project-id='testCase.project.id' />
+        </div>
       </template>
     </PageTitle>
     <div v-if='steps !== null' class="flex flex-col">
@@ -62,8 +70,8 @@
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <span v-if='!runLog[step.id]' class="px-2 py-1 text-gray-800 text-xs font-medium bg-gray-100 rounded-full">{{$t('Waiting')}}</span>
                     <span v-else-if='activeRunStepId === step.id' class="px-2 py-1 text-white text-xs font-medium bg-gray-600 rounded-full">{{$t('Processing')}}</span>
-                    <span v-else-if='runLog[step.id].status === false' class="px-2 py-1 text-red-800 text-xs font-medium bg-red-100 rounded-full">{{$t('Failed')}}</span>
-                    <span v-else-if='runLog[step.id].status === true' class="px-2 py-1 text-green-800 text-xs font-medium bg-green-100 rounded-full">{{$t('Success')}}</span>
+                    <span v-else-if='runLog[step.id].success === false' class="px-2 py-1 text-red-800 text-xs font-medium bg-red-100 rounded-full">{{$t('Failed')}}</span>
+                    <span v-else-if='runLog[step.id].success === true' class="px-2 py-1 text-green-800 text-xs font-medium bg-green-100 rounded-full">{{$t('Success')}}</span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <span class="relative z-0 inline-flex shadow-sm rounded-md">
@@ -105,6 +113,7 @@
       ref="createStepModal"
       :header="$t('Add New Step')"
       :classes='{...modalClasses, wrapper: "z-50 max-w-xl px-3 py-12", }'
+      :click-to-close='false'
     >
       <form class='px-2 py-2' @submit.prevent="addStep">
         <div>
@@ -130,6 +139,7 @@
         <div class='mt-3 headers-code-block'>
           <label class="block text-sm font-medium text-gray-700">{{ $t('Headers') }}<span class='text-gray-400 ml-1 font-normal text-sx'>(json)</span></label>
           <codemirror v-model="createStep.headers" :options="headersCmOptions"></codemirror>
+          <p v-if='createValidationErrors.headers' class="mt-2 text-sm text-red-600">{{createValidationErrors.headers[0]}}</p>
         </div>
         <div class='mt-4'>
           <label class="block text-sm font-medium text-gray-700">{{ $t('Content Type') }}</label>
@@ -146,6 +156,7 @@
         <div v-show='createStep.contentType !== "none"' class='mt-3'>
           <label class="block text-sm font-medium text-gray-700">{{ $t('Body') }}</label>
           <codemirror v-model="createStep.body" :options="bodyCmOptions"></codemirror>
+          <p v-if='createValidationErrors.body' class="mt-2 text-sm text-red-600">{{createValidationErrors.body[0]}}</p>
         </div>
         <div class='mt-4'>
           <label for="create-step-expected-status" class="block text-sm font-medium text-gray-700">{{ $t('Expected Status Code') }}</label>
@@ -154,7 +165,7 @@
           </div>
           <p v-if='createValidationErrors.expected_status' class="mt-2 text-sm text-red-600">{{createValidationErrors.expected_status[0]}}</p>
         </div>
-        <div v-show='createStep.contentType === "json"' class='mt-4'>
+        <div class='mt-4'>
           <label class="block text-sm font-medium text-gray-700">{{ $t('Use Validator') }}</label>
           <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-5 mt-2">
             <div v-for='(useValidatorOption, index) in useValidatorOptions' :key='`create-use-validator-${index}`' class='flex items-center'>
@@ -166,7 +177,7 @@
           </div>
           <p v-if='createValidationErrors.use_validator' class="mt-2 text-sm text-red-600">{{createValidationErrors.use_validator[0]}}</p>
         </div>
-        <div v-show='createStep.contentType === "json" && createStep.useValidator' class='mt-4'>
+        <div v-if='createStep.useValidator' class='mt-4'>
           <label class="block text-sm font-medium text-gray-700">{{ $t('Validation Schema') }}<span class='text-gray-400 ml-1 font-normal text-sx'>(json)</span></label>
           <codemirror v-model="createStep.validationSchema" :options="validationCmOptions"></codemirror>
           <p v-if='createValidationErrors.validator_schema' class="mt-2 text-sm text-red-600">{{createValidationErrors.validator_schema[0]}}</p>
@@ -192,6 +203,7 @@
 import EnvironmentsModal from '~/components/EnvironmentsModal'
 import EnvironmentSelect from '~/components/EnvironmentSelect'
 import { getDefaultModalClasses } from '~/helpers/defaultModalClasses'
+import Runner from '~/helpers/runner'
 const Ajv = require("ajv")
 export default {
   name: 'Project',
@@ -254,7 +266,8 @@ export default {
         {value: false, label: this.$t("Don't use validator")},
         {value: true, label: this.$t('Use validator')},
       ],
-      ajv: new Ajv()
+      ajv: new Ajv(),
+      running: false
     }
   },
   watch: {
@@ -333,6 +346,15 @@ export default {
         }
       }
 
+      if(this.createStep.body_type === "json"){
+        try {
+          JSON.parse(this.createStep.body)
+        }catch(err){
+          this.$toast.error(this.$t('body_not_valid').toString())
+          return
+        }
+      }
+
       const data = {
         name: this.createStep.name,
         url: this.createStep.url,
@@ -342,7 +364,7 @@ export default {
         body: this.createStep.body || undefined,
         expected_status: String(this.createStep.expectedStatus),
         use_validator: this.createStep.useValidator,
-        validator_schema:  this.createStep.useValidator ? this.validator_schema : undefined
+        validator_schema: this.createStep.useValidator ? this.createStep.validationSchema : undefined
       }
 
       this.$axios.post(`cases/${this.$route.params.id}/steps`, data).then(res => {
@@ -397,6 +419,72 @@ export default {
       }
       this.toggleStepId = step.id
     },
+    async startRun(){
+      if(this.running || !this.steps || this.steps.length === 0){
+        return
+      }
+      this.runLog = {}
+      this.running = true
+      const activeEnvironment = this.$store.state.environments.environments[this.projectId] || []
+      const activeEnvironmentData = {}
+      activeEnvironment.forEach((env) => {
+        activeEnvironmentData[env.key] = env.value || ''
+      })
+
+      const runner = new Runner(this.steps, activeEnvironmentData)
+      for (const step of this.steps) {
+        let httpCode = null
+        let response = null
+        try {
+          response = await runner.run(step)
+          httpCode = response.status
+          this.runLog[step.id] = response
+        } catch (err){
+          if(err.response){
+            response = err.response
+            httpCode = err.response.status
+          }
+        }
+        if(httpCode !== Number(step.expected_status)){
+          this.runLog = {
+            ...this.runLog,
+            [step.id]: {
+              response,
+              success: false,
+            }
+          }
+          break
+        }
+
+        if(step.use_validator){
+          const validatorSchema = JSON.parse(step.validator_schema || "{}")
+          const validate = this.ajv.compile(validatorSchema)
+          const isValid = validate(response.data)
+          if(!isValid){
+            this.runLog = {
+              ...this.runLog,
+              [step.id]: {
+                response,
+                success: false,
+              }
+            }
+            break
+          }
+        }
+
+        // success
+
+        this.runLog = {
+          ...this.runLog,
+          [step.id]: {
+            response,
+            success: true,
+          }
+        }
+
+      }
+      this.running = false
+    }
   }
 }
 </script>
