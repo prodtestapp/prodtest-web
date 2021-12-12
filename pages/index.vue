@@ -1,7 +1,11 @@
 <template>
-  <Tutorial/>
+  <div></div>
 </template>
 
 <script>
-export default {}
+export default {
+  mounted() {
+    this.$router.push('projects')
+  }
+}
 </script>

@@ -48,7 +48,7 @@
                 </th>
               </tr>
               </thead>
-              <draggable v-model="steps" tag="tbody" class="bg-white divide-y divide-gray-200" handle=".handle" :component-data='getDraggableComponentData()'>
+              <draggable v-model="steps" tag="tbody" class="bg-white divide-y divide-gray-200" handle=".handle" @change='onChangeStepsOrder'>
                 <tr v-for='step in steps' :key='`step-${step.id}`'>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <svg class="h-5 w-5 handle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -409,7 +409,7 @@ export default {
       this.createStep = {}
     },
     closeUpdateModal() {
-      this.$refs.createStepModal.hide()
+      this.$refs.editStepModal.hide()
       this.updateStep = {}
     },
     addStep(){
@@ -464,34 +464,6 @@ export default {
         }
       })
     },
-    updateCase(){
-      this.$axios.put(`cases/${this.editCase.id}`, {name: this.editCase.name}).then(res => {
-        this.project = {
-          ...this.project,
-          cases: this.project.cases.map(tc => tc.id === res.data.data.id ? res.data.data : tc)
-        }
-        this.$refs.editCaseModal.hide()
-      }).catch(err => {
-        if(err.response.status === 422){
-          this.editValidationErrors = err.response.data.errors
-        }else{
-          this.$toast.error(this.$t('default_error').toString())
-        }
-      })
-    },
-    deleteCase(testCase){
-      const isConfirmed = confirm(this.$t('Want you delete this case?').toString())
-      if(isConfirmed){
-        this.$axios.delete(`cases/${testCase.id}`).then(() => {
-          this.project = {
-            ...this.project,
-            cases: this.project.cases.filter(tc => tc.id !== testCase.id)
-          }
-        }).catch(() => {
-          this.$toast.error(this.$t('default_error').toString())
-        })
-      }
-    },
     showEnvironmentsModal(){
       this.isVisibleEnvironmentsModal = true
     },
@@ -511,13 +483,25 @@ export default {
       }
       this.runLog = {}
       this.running = true
-      const activeEnvironment = this.$store.state.environments.environments[this.projectId] || []
-      const activeEnvironmentData = {}
-      activeEnvironment.forEach((env) => {
-        activeEnvironmentData[env.key] = env.value || ''
-      })
 
-      const runner = new Runner(this.steps, activeEnvironmentData)
+      const activeEnvironmentData = {}
+      const projectEnvironments = this.$store.state.environments.environments[this.testCase.project.id] || []
+      const activeEnvironmentId = this.$store.state.environments.activeEnvironmentIds[this.testCase.project.id] || null
+      if(activeEnvironmentId){
+        const activeEnvironment = projectEnvironments.find(env => env.id === activeEnvironmentId)
+        let arrayData = []
+        if(activeEnvironment.data){
+          arrayData = JSON.parse(activeEnvironment.data)
+        }
+        arrayData.forEach(item => {
+          activeEnvironmentData[item.key] = item.value || ''
+        })
+      }
+
+      let failed = false
+      let failedStepId = 0
+
+      const runner = new Runner(activeEnvironmentData)
       for (const step of this.steps) {
         let httpCode = null
         let response = null
@@ -532,6 +516,8 @@ export default {
           }
         }
         if(httpCode !== Number(step.expected_status)){
+          failed = true
+          failedStepId = step.id
           this.runLog = {
             ...this.runLog,
             [step.id]: {
@@ -547,6 +533,8 @@ export default {
           const validate = this.ajv.compile(validatorSchema)
           const isValid = validate(response.data)
           if(!isValid){
+            failed = true
+            failedStepId = step.id
             this.runLog = {
               ...this.runLog,
               [step.id]: {
@@ -558,8 +546,6 @@ export default {
           }
         }
 
-        // success
-
         this.runLog = {
           ...this.runLog,
           [step.id]: {
@@ -570,26 +556,25 @@ export default {
 
       }
       this.running = false
+      this.addLog(!failed, failedStepId)
     },
     onChangeStepsOrder(value){
-      console.log(value)
-    },
-    getDraggableComponentData() {
-      return {
-        on: {
-          change: this.onChangeStepsOrder,
-        },
-      };
+      if(value.moved){
+        const step = this.steps[value.moved.newIndex]
+        this.$axios.post(`steps/${step.id}/change-order`, {
+          order_no: value.moved.newIndex + 1
+        })
+      }
+
     },
     showEditStepModal(step) {
-      console.log('step 1');
       this.updateStep = {
         id: step.id,
         name: step.name,
         url: step.url,
         method: step.method,
         headers: step.headers,
-        contentType: step.body_type,
+        contentType: step.body_type ? step.body_type : 'none',
         body: step.body,
         expectedStatus: step.expected_status,
         useValidator: step.use_validator,
@@ -639,11 +624,16 @@ export default {
           this.$toast.error(this.$t('default_error').toString())
         }
       })
+    },
+    addLog(success, stepId=undefined){
+      this.$axios.post(`cases/${this.testCase.project.id}/case-logs`, {
+        status: success,
+        failed_step_id: stepId || undefined,
+      })
     }
   }
 }
 </script>
-
 
 <style>
 .cm-s-default {

@@ -1,12 +1,12 @@
 <template>
   <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <h1 class="mt-10 text-center text-4xl font-extrabold text-indigo-700">
-        ProdTest
+      <h1 class="mt-10 text-center text-4xl font-extrabold text-indigo-700 flex justify-center">
+        <img src='/images/logo.png' />
       </h1>
-      <h2 class="mt-4 text-center text-3xl font-semibold text-gray-800">
+      <h3 class="mt-8 text-center text-3xl font-semibold text-gray-600">
         {{$t('Sign in to your account')}}
-      </h2>
+      </h3>
     </div>
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">

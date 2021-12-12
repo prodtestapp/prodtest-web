@@ -1,8 +1,8 @@
-# ProdTest Web ()
+# ProdTest Web
 End-to-End API testing tool with **no code**
 
 ## Nedir?
-ProdTest API uygulamalarına kodsuz bir şekilde e2e test eklemeyi sağlayan bir araçtır. Projenize senaryo bazlı testleri hızlıca ekleyerek web servislerinizin doğru biçimde çalıştığınızdan emin olabilirsiniz.
+ProdTest API uygulamalarına kod yazmadan e2e (end-to-end) test eklemeyi sağlayan bir araçtır. Projenize senaryo bazlı testleri hızlıca ekleyerek web servislerinizin doğru biçimde çalıştığınızdan emin olabilirsiniz.
 
 ## Özellikler
 * Platform içerisinde birden fazla kullanıcı oluşturabilirsiniz.
