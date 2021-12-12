@@ -5,7 +5,7 @@ End-to-End API testing tool with **no code**
 ProdTest API uygulamalarına kod yazmadan e2e (end-to-end) test eklemeyi sağlayan bir araçtır. Projenize senaryo bazlı testleri hızlıca ekleyerek web servislerinizin doğru biçimde çalıştığınızdan emin olabilirsiniz.
 
 ## Önizleme Videosu (YouTube)
-Video adresi: [YouTube Videosu](https://www.youtube.com/watch?v=CgMLbAvnoPc)
+Video adresi: [https://www.youtube.com/watch?v=CgMLbAvnoPc](https://www.youtube.com/watch?v=CgMLbAvnoPc)
 
 [![youtube video](https://i3.ytimg.com/vi/CgMLbAvnoPc/maxresdefault.jpg)](https://youtu.be/CgMLbAvnoPc)
 
