@@ -630,6 +630,13 @@ export default {
         status: success,
         failed_step_id: stepId || undefined,
       })
+    },
+    deleteStep(step) {
+      this.$axios.delete(`steps/${step.id}`).then(() => {
+        this.steps = this.steps.filter(s => s.id !== step.id)
+      }).catch(() => {
+        this.$toast.error(this.$t('default_error').toString())
+      })
     }
   }
 }
