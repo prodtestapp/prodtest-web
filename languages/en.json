@@ -46,5 +46,10 @@
   "Key": "Key",
   "Value": "Value",
   "Add New Variable": "Add New Variable",
-  "Updated!": "Updated!"
+  "Updated!": "Updated!",
+  "Add New User": "Add New User",
+  "Users": "Users",
+  "Password Again": "Password Again",
+  "Change Password": "Change Password",
+  "Full Name": "Full Name"
 }
