@@ -184,6 +184,90 @@
         </div>
       </template>
     </t-modal>
+    <t-modal
+      ref="editStepModal"
+      :header="$t('Edit Step')"
+    >
+      <form class='px-2 py-2' @submit.prevent="updateStepData">
+        <div>
+          <label for="update-step-name" class="block text-sm font-medium text-gray-700">{{ $t('Step Name') }}</label>
+          <div class="mt-1">
+            <input id="update-step-name" v-model='updateStep.name' type="text" required="" :class='{"border-red-300": updateValidationErrors.name}' class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+          </div>
+          <p v-if='updateValidationErrors.name' class="mt-2 text-sm text-red-600">{{updateValidationErrors.name[0]}}</p>
+        </div>
+        <div class='mt-3'>
+          <label for="update-step-url" class="block text-sm font-medium text-gray-700">{{ $t('URL') }}</label>
+          <div class="mt-1">
+            <input id="update-step-url" v-model='updateStep.url' type="text" required="" :class='{"border-red-300": updateValidationErrors.url}' class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+          </div>
+          <p v-if='updateValidationErrors.url' class="mt-2 text-sm text-red-600">{{updateValidationErrors.url[0]}}</p>
+        </div>
+        <div class='mt-3'>
+          <label class="block text-sm font-medium text-gray-700">{{ $t('Method') }}</label>
+          <select v-model='updateStep.method' class="w-full inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <option v-for='method in allowedMethods' :key='`create-method-${method}`' :value='method'>{{method}}</option>
+          </select>
+        </div>
+        <div class='mt-3 headers-code-block'>
+          <label class="block text-sm font-medium text-gray-700">{{ $t('Headers') }}<span class='text-gray-400 ml-1 font-normal text-sx'>(json)</span></label>
+          <codemirror v-model="updateStep.headers" :options="headersCmOptions"></codemirror>
+        </div>
+        <div class='mt-4'>
+          <label class="block text-sm font-medium text-gray-700">{{ $t('Content Type') }}</label>
+          <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-5 mt-2">
+            <div v-for='contentType in allowedContentTypes' :key='`create-content-type-${contentType}`' class='flex items-center'>
+              <input :id="`create-content-type-item-${contentType}`" v-model='updateStep.contentType' checked name='"create-content-type' type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" :value='contentType'>
+              <label :for="`create-content-type-item-${contentType}`" class="pl-2 block text-sm font-medium text-gray-700">
+                {{contentType}}
+              </label>
+            </div>
+          </div>
+          <p v-if='updateValidationErrors.body_type' class="mt-2 text-sm text-red-600">{{updateValidationErrors.body_type[0]}}</p>
+        </div>
+        <div v-show='updateStep.contentType !== "none"' class='mt-3'>
+          <label class="block text-sm font-medium text-gray-700">{{ $t('Body') }}</label>
+          <codemirror v-model="updateStep.body" :options="bodyCmOptions"></codemirror>
+        </div>
+        <div class='mt-4'>
+          <label for="update-step-expected-status" class="block text-sm font-medium text-gray-700">{{ $t('Expected Status Code') }}</label>
+          <div class="mt-1">
+            <input id='update-step-expected-status' v-model='updateStep.expectedStatus' type='text' required=''
+                   :class='{"border-red-300": updateValidationErrors.expectedStatus}'
+                   class='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm' />
+          </div>
+          <p v-if='updateValidationErrors.expected_status' class="mt-2 text-sm text-red-600">{{ updateValidationErrors.expected_status[0] }}</p>
+        </div>
+        <div class='mt-4'>
+          <label class="block text-sm font-medium text-gray-700">{{ $t('Use Validator') }}</label>
+          <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-5 mt-2">
+            <div v-for='(useValidatorOption, index) in useValidatorOptions' :key='`create-use-validator-${index}`' class='flex items-center'>
+              <input :id="`create-use-validator-item-${index}`" v-model='updateStep.useValidator' name='create-use-validator' type="radio" checked class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" :value='useValidatorOption.value'>
+              <label :for="`create-use-validator-item-${index}`" class="pl-2 block text-sm font-medium text-gray-700">
+                {{useValidatorOption.label}}
+              </label>
+            </div>
+          </div>
+          <p v-if='updateValidationErrors.use_validator' class="mt-2 text-sm text-red-600">{{updateValidationErrors.use_validator[0]}}</p>
+        </div>
+        <div v-if='updateStep.useValidator' class='mt-4'>
+          <label class="block text-sm font-medium text-gray-700">{{ $t('Validation Schema') }}<span class='text-gray-400 ml-1 font-normal text-sx'>(json)</span></label>
+          <codemirror v-model="updateStep.validationSchema" :options="validationCmOptions"></codemirror>
+          <p v-if='updateValidationErrors.validator_schema' class="mt-2 text-sm text-red-600">{{updateValidationErrors.validator_schema[0]}}</p>
+          <p  class="mt-2 text-sm text-blue-400" v-html='$t("ajv_validation_information")'></p>
+        </div>
+      </form>
+      <template #footer>
+        <div class="flex justify-between">
+          <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500" @click='closeUpdateModal'>
+            {{$t('Cancel')}}
+          </button>
+          <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" @click='updateStepData'>
+            {{$t('Update')}}
+          </button>
+        </div>
+      </template>
+    </t-modal>
     <EnvironmentsModal :project-id="testCase.project.id" :is-visible='isVisibleEnvironmentsModal' @close='hideEnvironmentsModal'  />
   </div>
 </template>
@@ -204,7 +288,9 @@ export default {
       testCase: null,
       editStep: {},
       createStep: {},
+      updateStep: {},
       createValidationErrors: {},
+      updateValidationErrors: {},
       editValidationErrors: {},
       isVisibleEnvironmentsModal: false,
       steps: null,
@@ -301,17 +387,13 @@ export default {
       this.createStep = {...this.defaultCreateData}
       this.$refs.createStepModal.show()
     },
-    showEditCaseModal(testCase) {
-      this.editCase = { ...testCase }
-      this.$refs.editCaseModal.show()
-    },
-    closeEditModal(){
-      this.$refs.editCaseModal.hide()
-      this.editCase = {}
-    },
     closeCreateModal(){
       this.$refs.createStepModal.hide()
       this.createStep = {}
+    },
+    closeUpdateModal() {
+      this.$refs.createStepModal.hide()
+      this.updateStep = {}
     },
     addStep(){
       if(this.createStep.headers){
@@ -397,6 +479,65 @@ export default {
       }
       this.toggleStepId = step.id
     },
+    showEditStepModal(step) {
+      console.log('step 1');
+      this.updateStep = {
+        id: step.id,
+        name: step.name,
+        url: step.url,
+        method: step.method,
+        headers: step.headers,
+        contentType: step.body_type,
+        body: step.body,
+        expectedStatus: step.expected_status,
+        useValidator: step.use_validator,
+        validationSchema: step.validator_schema
+      };
+      this.$refs.editStepModal.show();
+    },
+    updateStepData() {
+      if (this.updateStep.headers) {
+        try {
+          JSON.parse(this.updateStep.headers)
+        } catch (err) {
+          this.$toast.error(this.$t('headers_not_valid').toString())
+          return
+        }
+      }
+
+      if (this.updateStep.useValidator) {
+        try {
+          const schemaObject = JSON.parse(this.updateStep.validationSchema)
+          this.ajv.compile(schemaObject)
+        } catch (err) {
+          this.$toast.error(this.$t('validation_schema_error').toString())
+          return
+        }
+      }
+
+      const updateData = {
+        name: this.updateStep.name,
+        url: this.updateStep.url,
+        method: this.updateStep.method,
+        headers: this.updateStep.headers,
+        body_type: this.updateStep.contentType !== "none" ? this.updateStep.contentType : undefined,
+        body: this.updateStep.body || undefined,
+        expected_status: String(this.updateStep.expectedStatus),
+        use_validator: this.updateStep.useValidator,
+        validator_schema:  this.updateStep.useValidator ? this.updateStep.validationSchema : undefined
+      }
+
+      this.$axios.put(`steps/${this.updateStep.id}`, updateData).then(res => {
+        this.steps = this.steps.map(step => step.id === res.data.data.id ? res.data.data : step)
+        this.$refs.editStepModal.hide()
+      }).catch(err => {
+        if (err.response.status === 422) {
+          this.updateValidationErrors = err.response.data.errors
+        } else {
+          this.$toast.error(this.$t('default_error').toString())
+        }
+      })
+    }
   }
 }
 </script>
