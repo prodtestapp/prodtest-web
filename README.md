@@ -55,6 +55,12 @@ $ yarn build
 $ yarn start
 ```
 
+Docker ile alternatif kurulum:
+```bash
+docker-compose up -d
+# localhost:3000/
+```
+
 `Development` Projeyi development modunda çalıştırmak istiyorsanız eğer 3000 portu kullanımda değilse [http://localhost:3000](http://localhost:3000) adresinden projeye ulaşabilirsiniz. Port kullanımdaysa terminalinizdeki adresi kullanarak ulaşabilirsiniz.
 
 ## Varsayılan Kullanıcı Bilgileri
