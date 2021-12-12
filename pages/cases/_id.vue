@@ -113,6 +113,7 @@
       ref="createStepModal"
       :header="$t('Add New Step')"
       :classes='{...modalClasses, wrapper: "z-50 max-w-xl px-3 py-12", }'
+      :click-to-close='false'
     >
       <form class='px-2 py-2' @submit.prevent="addStep">
         <div>
@@ -164,7 +165,7 @@
           </div>
           <p v-if='createValidationErrors.expected_status' class="mt-2 text-sm text-red-600">{{createValidationErrors.expected_status[0]}}</p>
         </div>
-        <div v-show='createStep.contentType === "json"' class='mt-4'>
+        <div class='mt-4'>
           <label class="block text-sm font-medium text-gray-700">{{ $t('Use Validator') }}</label>
           <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-5 mt-2">
             <div v-for='(useValidatorOption, index) in useValidatorOptions' :key='`create-use-validator-${index}`' class='flex items-center'>
@@ -176,7 +177,7 @@
           </div>
           <p v-if='createValidationErrors.use_validator' class="mt-2 text-sm text-red-600">{{createValidationErrors.use_validator[0]}}</p>
         </div>
-        <div v-show='createStep.contentType === "json" && createStep.useValidator' class='mt-4'>
+        <div v-if='createStep.useValidator' class='mt-4'>
           <label class="block text-sm font-medium text-gray-700">{{ $t('Validation Schema') }}<span class='text-gray-400 ml-1 font-normal text-sx'>(json)</span></label>
           <codemirror v-model="createStep.validationSchema" :options="validationCmOptions"></codemirror>
           <p v-if='createValidationErrors.validator_schema' class="mt-2 text-sm text-red-600">{{createValidationErrors.validator_schema[0]}}</p>
@@ -363,7 +364,7 @@ export default {
         body: this.createStep.body || undefined,
         expected_status: String(this.createStep.expectedStatus),
         use_validator: this.createStep.useValidator,
-        validator_schema:  this.createStep.useValidator ? this.validator_schema : undefined
+        validator_schema: this.createStep.useValidator ? this.createStep.validationSchema : undefined
       }
 
       this.$axios.post(`cases/${this.$route.params.id}/steps`, data).then(res => {
@@ -453,15 +454,34 @@ export default {
             }
           }
           break
-        }else{
-          this.runLog = {
-            ...this.runLog,
-            [step.id]: {
-              response,
-              success: true,
+        }
+
+        if(step.use_validator){
+          const validatorSchema = JSON.parse(step.validator_schema || "{}")
+          const validate = this.ajv.compile(validatorSchema)
+          const isValid = validate(response.data)
+          if(!isValid){
+            this.runLog = {
+              ...this.runLog,
+              [step.id]: {
+                response,
+                success: false,
+              }
             }
+            break
           }
         }
+
+        // success
+
+        this.runLog = {
+          ...this.runLog,
+          [step.id]: {
+            response,
+            success: true,
+          }
+        }
+
       }
       this.running = false
     }
