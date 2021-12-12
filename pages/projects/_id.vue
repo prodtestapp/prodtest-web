@@ -31,7 +31,7 @@
               <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for='testCase in project.cases' :key='`case-${testCase.id}`'>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {{ testCase.name }}
+                  <NuxtLink :to='`/cases/${testCase.id}`'>{{ testCase.name }}</NuxtLink>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{testCase.steps_count}} {{$t('Steps')}}
@@ -43,13 +43,13 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <span class="relative z-0 inline-flex shadow-sm rounded-md">
-                    <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                    <NuxtLink :to='`/cases/${testCase.id}`' type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
                       <span class="sr-only">{{$t('Run')}}</span>
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                    </button>
+                    </NuxtLink>
                     <button type="button" class="-ml-px relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" @click.prevent='showEditCaseModal(testCase)'>
                       <span class="sr-only">{{$t('Edit')}}</span>
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,7 +82,7 @@
         <div>
           <label for="create-case-name" class="block text-sm font-medium text-gray-700">{{ $t('Case Name') }}</label>
           <div class="mt-1">
-            <input id="create-case-name" v-model='createCase.name' name="project-name" type="text" required="" :class='{"border-red-300": editValidationErrors.name}' class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <input id="create-case-name" v-model='createCase.name' name="project-name" type="text" required="" :class='{"border-red-300": createValidationErrors.name}' class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
           </div>
           <p v-if='createValidationErrors.name' class="mt-2 text-sm text-red-600">{{createValidationErrors.name[0]}}</p>
         </div>
@@ -136,7 +136,7 @@ export default {
   data(){
     return {
       loading: true,
-      project: true,
+      project: null,
       editCase: {},
       createCase: {},
       editValidationErrors: {},
@@ -157,7 +157,7 @@ export default {
       })
     },
     showCreateModal(){
-      this.createProject = {}
+      this.createCase = {}
       this.$refs.createCaseModal.show()
     },
     showEditCaseModal(testCase) {
