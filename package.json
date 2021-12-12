@@ -25,7 +25,8 @@
     "git-cz": "^4.8.0",
     "nuxt": "^2.15.7",
     "vue-codemirror": "^4.0.6",
-    "vue-tailwind": "^2.5.0"
+    "vue-tailwind": "^2.5.0",
+    "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",
