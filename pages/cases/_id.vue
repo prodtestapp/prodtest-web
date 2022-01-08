@@ -626,7 +626,7 @@ export default {
       })
     },
     addLog(success, stepId=undefined){
-      this.$axios.post(`cases/${this.testCase.project.id}/case-logs`, {
+      this.$axios.post(`cases/${this.testCase.id}/case-logs`, {
         status: success,
         failed_step_id: stepId || undefined,
       })
