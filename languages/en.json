@@ -76,5 +76,7 @@
   "headers_not_valid": "Headers not valid",
   "body_not_valid": "Body not valid, data is not valid JSON",
   "Run Tests": "Run Tests",
-  "Running...": "Running..."
+  "Running...": "Running...",
+  "Domain": "Domain",
+  "optional": "optional"
 }
