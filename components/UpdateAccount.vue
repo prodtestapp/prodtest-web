@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       fullName: this.$auth.user.data.full_name,
-      validationErrors: {},
+      validationErrors: {}
     }
   },
   methods: {
@@ -35,10 +35,10 @@ export default {
       this.$axios
         .put('account', { full_name: this.fullName })
         .then(res => {
-          this.$auth.user.data.full_name = res.data.data.full_name;
-          this.$toast.success(this.$t('Updated!').toString());
+          this.$auth.setUser({ data: { ...this.$auth.user.data, full_name: res.data.data.full_name } })
+          this.$toast.success(this.$t('Updated!').toString())
         }).catch(() => {
-          this.$toast.error(this.$t('default_error').toString())
+        this.$toast.error(this.$t('default_error').toString())
       })
     }
   }
